@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "55420909539",
+    "project_id": "lakshya-app-5d1f0",
+    "storage_bucket": "lakshya-app-5d1f0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:55420909539:android:6a2193461acf74553392d6",
+        "android_client_info": {
+          "package_name": "com.example.lakshya_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAa9oglUO8qQRZwY0eBMLCMOxo7fJUWvkI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
