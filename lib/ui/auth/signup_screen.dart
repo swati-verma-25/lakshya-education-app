@@ -1,45 +1,50 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:lakshya_app/ui/auth/login_with_phone.dart';
-import 'package:lakshya_app/ui/auth/signup_screen.dart';
-import 'package:lakshya_app/ui/posts/post_screen.dart';
+import 'package:lakshya_app/ui/auth/login_screen.dart';
 import 'package:lakshya_app/utils/utils.dart';
 import 'package:lakshya_app/widgets/round_button_green.dart';
-// import 'package:lakshya_app/widgets/round_button_red.dart';
+import 'package:lakshya_app/widgets/round_button_red.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignupScreenState extends State<SignupScreen> {
+  bool loading = false;
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passeordController = TextEditingController();
 
-  final _auth = FirebaseAuth.instance;
+  FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void dispose() {
-    super.dispose();
+    // TODO: implement dispose
     emailController.dispose();
     passeordController.dispose();
   }
 
   void login() {
+    setState(() {
+      loading = true;
+    });
     _auth
-        .signInWithEmailAndPassword(
-            email: emailController.text,
+        .createUserWithEmailAndPassword(
+            email: emailController.text.toString(),
             password: passeordController.text.toString())
         .then((value) {
-      utils().toastMessage(value.user!.email.toString());
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => const PostScreen()));
+      setState(() {
+        loading = false;
+      });
     }).onError((error, stackTrace) {
-      debugPrint(error.toString());
       utils().toastMessage(error.toString());
+      setState(() {
+        loading = false;
+      });
     });
   }
 
@@ -48,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Login'),
+        title: Text('Sign Up'),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -56,6 +61,31 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            Container(
+              width: 200,
+              height: 80,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/logo.png'),
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Login or SignUp to your account',
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  color: Color.fromARGB(1, 2, 118, 125)),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Please enter your phone number',
+              style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  color: Color.fromARGB(1, 102, 102, 102)),
+            ),
             Form(
               key: _formKey,
               child: Column(
@@ -74,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       return null;
                     },
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 10,
                   ),
                   TextFormField(
@@ -99,11 +129,13 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 50,
             ),
             RoundButtonGreen(
-              title: 'Login',
+              title: 'Sign Up',
+              loading: loading,
               onTap: () {
                 if (_formKey.currentState!.validate()) {
                   login();
                 }
+                ;
               },
             ),
             const SizedBox(
@@ -112,34 +144,17 @@ class _LoginScreenState extends State<LoginScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Don't have an account "),
+                Text("Already have an account "),
                 TextButton(
                     onPressed: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const SignupScreen()));
+                              builder: (context) => LoginScreen()));
                     },
-                    child: const Text('Sign-Up'))
+                    child: Text('Login'))
               ],
-            ),
-            SizedBox(
-              height: 30,
-            ),
-            InkWell(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => LoginWithPhone()));
-              },
-              child: Container(
-                  height: 50,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      border: Border.all(color: Colors.black)),
-                  child: Center(
-                    child: Text('Login with Phone'),
-                  )),
-            ),
+            )
 
             // RoundButtonRed(
             //   title: 'Login',
